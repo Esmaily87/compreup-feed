@@ -29,10 +29,15 @@ interface PostProps{
     post: PostType;
 }
 
+interface Comm{
+    content: string
+}
+
 export function Post({ post }:PostProps) {
-    const [comments, setComments ]= useState([
-        ''
-    ] )
+    
+    
+    
+    const [comments, setComments ]= useState<Comm[]>([] )
 
     const [newCommentText, setNewCommentText] = useState('')
 
@@ -49,7 +54,14 @@ export function Post({ post }:PostProps) {
 
     function handleCreateNewComment(event: FormEvent){
         event.preventDefault()
-        setComments([...comments, newCommentText]);
+        
+        setComments(comments => [...comments!, {
+            //id: Math.random().toString(), // usar UUID aqui depois
+            //isCompleted: false, // valor inicial
+            content: newCommentText
+        }]);
+        
+        //setComments([...comments, newCommentText]);
        
         setNewCommentText('');        
     }
@@ -66,7 +78,7 @@ export function Post({ post }:PostProps) {
 
     function deleteComment(commentToDelete: string) {
         const commentsWithOutDeletedOne = comments.filter(comment => {
-            return comment !== commentToDelete;
+            return comment.content !== commentToDelete;
         })
          setComments(commentsWithOutDeletedOne);
     }
@@ -121,8 +133,8 @@ export function Post({ post }:PostProps) {
                {comments.map(comment  => {
                 return (
                 <Comment 
-                key={comment}
-                content={comment} 
+                key={comment.content}
+                content={comment.content} 
                 onDeleteComment={ deleteComment } 
                 />
                 )
